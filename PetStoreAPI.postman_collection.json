@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "9a1818a2-5c11-4444-8422-a3ad1ac20d27",
+		"name": "PetStoreAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30262091",
+		"_collection_link": "https://gold-trinity-928654.postman.co/workspace/APIAssignment~96491fe5-daae-428c-88ea-69876673d1a7/collection/30262091-9a1818a2-5c11-4444-8422-a3ad1ac20d27?action=share&source=collection_link&creator=30262091"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var responseData = pm.response.json();",
+							"",
+							"// Check if the response contains the 'id' field",
+							"if (responseData.message) {",
+							"    // Set the 'id' value as an environment variable",
+							"    pm.environment.set(\"userId\", responseData.message);",
+							"",
+							"    console.log(\"User ID set to environment variable: \" + responseData.message);",
+							"} else {",
+							"    console.log(\"ID not found in the response\");",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate a dynamic username",
+							"var username = 'user_' + Math.floor(Math.random() * 10000);",
+							"",
+							"// Set the dynamic username as an environment variable",
+							"pm.environment.set('dynamicUsername', username);",
+							"console.log('Dynamic Username:', username);",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n \"id\": \"{{$randomInt}}\", \n \"username\": \"{{dynamicUsername}}\", \n \"firstName\": \"Mukesh\", \n \"lastName\": \"Otwani\", \n \"email\":\"mukeshotwani@gmail.com\", \n\"password\": \"mukeshotwani\", \n\"phone\": \"7788994455\", \n\"userStatus\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body to JSON",
+							"var responseData = pm.response.json();",
+							"",
+							"// List of required fields",
+							"var requiredFields = [",
+							"    'id',",
+							"    'username',",
+							"    'firstName',",
+							"    'lastName',",
+							"    'email',",
+							"    'password',",
+							"    'phone',",
+							"    'userStatus'",
+							"];",
+							"",
+							"// Function to check if a field is null or blank",
+							"function isNullOrBlank(value) {",
+							"    return (value === null || value === undefined || value === '');",
+							"}",
+							"",
+							"// Verify all required fields are present and not null or blank",
+							"requiredFields.forEach(function(field) {",
+							"    pm.test(field + ' is present and not null or blank', function() {",
+							"        pm.expect(responseData).to.have.property(field);",
+							"        pm.expect(isNullOrBlank(responseData[field])).to.be.false;",
+							"    });",
+							"});",
+							"",
+							"// Log the result for better understanding",
+							"console.log(\"All fields verified and not null or blank.\");",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/user/{{dynamicUsername}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"{{dynamicUsername}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"username\": \"user_3610\",\n  \"firstName\": \"Rakesh\",\n  \"lastName\": \"Singh\",\n  \"email\": \"rakesh@gmail.com\",\n  \"password\": \"asdasd\",\n  \"phone\": \"7788554411\",\n  \"userStatus\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user/{{dynamicUsername}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"{{dynamicUsername}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/user/{{dynamicUsername}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"{{dynamicUsername}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
